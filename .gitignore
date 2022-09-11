@@ -1,0 +1,11 @@
+
+# Django
+backend/mediafiles
+*.log
+*.pot
+*.pyc
+
+# Enviroments
+backend/env
+.env.prod
+.env.prod.db

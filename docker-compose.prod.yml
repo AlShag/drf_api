@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    command: gunicorn muhome.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/home/backend/web/staticfiles
+      - media_volume:/home/backend/web/mediafiles
+    expose:
+      - 8000
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - database
+
+  database:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - media_volume:/home/backend/web/mediafiles
+    env_file:
+      - ./.env.prod.db
+
+  nginx:
+    build: ./frontend
+    ports:
+      - 1337:80
+    volumes:
+      - static_volume:/home/backend/web/staticfiles
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
