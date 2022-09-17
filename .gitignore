@@ -1,6 +1,7 @@
 
 # Django
 backend/mediafiles
+backend/db.sqlite3
 *.log
 *.pot
 *.pyc
@@ -9,3 +10,4 @@ backend/mediafiles
 backend/env
 .env.prod
 .env.prod.db
+docker-compose.prod.yml
