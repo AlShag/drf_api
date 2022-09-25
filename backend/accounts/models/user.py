@@ -33,11 +33,6 @@ class User(UUIDAbstractModel, AbstractUser):
         related_name="blocked_users_set"
     )
 
-    def count_followers(self):
-        return self.followers.count()
-
-    def count_following(self):
-        return User.objects.filter(followers=self).count()
-
-    def check_permission_to_user(self):
-        return False if User.objects.get(blocked_users=self) else True
+    @property
+    def following(self):
+        return User.objects.filter(followers=self)

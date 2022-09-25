@@ -15,10 +15,21 @@ services:
 
   database:
     image: postgres:13.0-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  nginx:
+    build: ./frontend
+    ports:
+      - 1337:80
+    depends_on:
+      - backend
+    volumes:
+      - static_volume:/home/backend/web/staticfiles
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:

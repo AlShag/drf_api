@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'drf_recaptcha',
+    'ckeditor',
     'accounts',
     'common',
     'posts',

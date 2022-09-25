@@ -53,7 +53,8 @@ urlpatterns = [
         name="schema-redoc-ui",
     ),
     path(f"{URLS_PREFIX}/admin/", admin.site.urls),
-    path(f"{URLS_PREFIX}/", include("accounts.urls"))
+    path(f"{URLS_PREFIX}/", include("accounts.urls")),
+    path(f"{URLS_PREFIX}/", include("posts.urls")),
 ]
 
 if bool(settings.DEBUG):
