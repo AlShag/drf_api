@@ -91,9 +91,12 @@ class UserViewSet(
                             status=status.HTTP_200_OK)
 
         if target_user.is_private:
-            target_user.pending_requests.add(current_user)
-            return Response({"Requested": "Follow request has been sent"},
-                            status=status.HTTP_200_OK)
+            if current_user in target_user.pending_requests.all():
+                pass
+            else:
+                target_user.pending_requests.add(current_user)
+                return Response({"Requested": "Follow request has been sent"},
+                                status=status.HTTP_200_OK)
 
         target_user.followers.add(current_user)
         return Response({"Following": "Following success"},
@@ -116,6 +119,11 @@ class UserViewSet(
             target_user.followers.remove(current_user)
         elif target_user.pending_requests.filter(pk=current_user.pk):
             target_user.pending_requests.remove(current_user)
+
+        if current_user.followers.filter(pk=target_user.pk):
+            current_user.followers.remove(target_user)
+        elif current_user.pending_requests.filter(pk=target_user.pk):
+            current_user.pending_requests.remove(target_user)
 
         if current_user.pending_requests.filter(pk=target_user.pk):
             current_user.pending_requests.remove(target_user)

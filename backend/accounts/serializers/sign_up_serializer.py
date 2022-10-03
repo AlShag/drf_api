@@ -1,13 +1,11 @@
 from django.contrib.auth import get_user_model, password_validation
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from drf_recaptcha.fields import ReCaptchaV2Field
 
 User = get_user_model()
 
 
 class SignUpSerializer(serializers.ModelSerializer):
-    # recaptcha = ReCaptchaV2Field()
 
     password = serializers.CharField(write_only=True, style={"input_type": "password"})
     password_confirm = serializers.CharField(write_only=True, style={"input_type": "password"})
@@ -15,7 +13,6 @@ class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            # "recaptcha",
             "email",
             "username",
             "password",
@@ -30,7 +27,6 @@ class SignUpSerializer(serializers.ModelSerializer):
 
         # remove extra unneeded field
         data.pop('password_confirm')
-        # data.pop("recaptcha")
 
         # validate "password"
         user = User(**data)

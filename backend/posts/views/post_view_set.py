@@ -1,18 +1,13 @@
-import typing as t
-
-from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from posts.serializers.post_serializer import PostSerializer
 from posts.models.post import Post
-from posts.models.upvote import Upvote
 
 tags = ["Posts"]
 

@@ -24,27 +24,73 @@ class PostManager(models.Manager):
             album_year = album["year"]
             album_artists = []
             for i in range(len(album["artists"])):
-                album_artists.append(album["artists"][i]["name"])
-            tags = [*album_artists, album_title, album_year,]
+                album_artists.append(album["artists"][i]["id"])
             thumbnail = album["thumbnails"][3]["url"] # 544x544px image
+
+            tag = Tag.objects.get_or_create(
+                name=album_title,
+                image_url=album["thumbnails"][2]["url"], # 226x226px image
+            )
+            tags.append(tag[0].pk)
+
+            tag = Tag.objects.get_or_create(
+                name=album_year,
+                image_url = f"https://via.placeholder.com/150/000000/FFFFFF/?text={album_year}",
+            )
+            tags.append(tag[0].pk)
+
+            for artist in album_artists:
+                artist_detail = yt.get_artist(artist)
+                artist_name = artist_detail["name"]
+                artist_thumbnail =  artist_detail["thumbnails"][0]["url"]
+                tag = Tag.objects.get_or_create(
+                    name=artist_name,
+                    image_url=artist_thumbnail
+                )
+                tags.append(tag[0].pk)
 
         elif kwargs["featured_type"] == "ARTIST":
             artist = yt.get_artist(kwargs["featured_id"])
             artist_name = artist["name"]
-            tags = [artist_name]
+            artist_thumbnail = artist["thumbnails"][0] # 540x225px image
+
+            tag = Tag.objects.get_or_create(
+                name=artist_name,
+                image_url=artist_thumbnail,
+            )
+            tags.append(tag[0].pk)
+
             thumbnail = artist["thumbnails"][1]["url"] # 816x340px image
 
         elif kwargs["featured_type"] == "SONG":
             song = yt.get_song(kwargs["featured_id"])
             song_name = song["videoDetails"]["title"]
-            song_author = song["videoDetails"]["author"]
-
+            song_artist = yt.get_artist(song["videoDetails"]["channelId"])
+            song_artist_name = song_artist["name"]
+            song_artist_thumbnail = song_artist["thumbnails"][0] # 540x225px image
             song_publish_date = song["microformat"]["microformatDataRenderer"]["publishDate"]
             # example of song_publish_date: "2018-06-21"
             song_year = ''.join(song_publish_date.split('-')[:-2])
             # example of song_year based on song_publish_date example: "2018"
-            tags = [song_author, song_name, song_year]
-            thumbnail = song["videoDetails"]["thumbnail"]["thumbnails"][3]["url"] # 544x544px image
+            thumbnail = song["videoDetails"]["thumbnail"]["thumbnails"][2]["url"]
+
+            tag = Tag.objects.get_or_create(
+                name=song_year,
+                image_url = f"https://via.placeholder.com/150/000000/FFFFFF/?text={song_year}",
+            )
+            tags.append(tag[0].pk)
+
+            tag = Tag.objects.get_or_create(
+                name=song_name,
+                image_url = song["videoDetails"]["thumbnail"]["thumbnails"][2]["url"], # 226x226px image
+            )
+            tags.append(tag[0].pk)
+
+            tag = Tag.objects.get_or_create(
+                name=song_artist_name,
+                image_url=song_artist_thumbnail,
+            )
+            tags.append(tag[0].pk)
 
         elif kwargs["featured_type"] == "PLAYLIST":
             playlist = yt.get_playlist(kwargs["featured_id"])
@@ -55,12 +101,7 @@ class PostManager(models.Manager):
         post = self.create(**kwargs)
 
         for tag in tags:
-            if Tag.objects.filter(name=tag):
-                tag_object = Tag.objects.get(name=tag)
-                post.tags.add(tag_object)
-            else:
-                tag_object = Tag.objects.create(name=tag)
-                post.tags.add(tag_object)
+            post.tags.add(tag)
 
         return post
 

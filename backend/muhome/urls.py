@@ -31,7 +31,7 @@ DefaultInfo = openapi.Info(
 schema_view = get_schema_view(
     DefaultInfo,
     public=True,
-    permission_classes=[permissions.IsAdminUser],
+    permission_classes=[permissions.AllowAny],
 )
 
 URLS_PREFIX = "api"

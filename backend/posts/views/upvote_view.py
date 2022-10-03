@@ -10,7 +10,7 @@ from posts.models.upvote import Upvote
 from posts.models.post import Post
 from posts.serializers.upvote_serializer import UpvoteSerializer
 
-tags = ["Posts"]
+tags = ["Upvotes"]
 
 
 @method_decorator(
