@@ -1,9 +1,6 @@
-# Muhome 
+# Django REST Framework API Example 
 
-Music web-blog backend
-
-Works with youtube music API as music base 
-to make your posts more filled with related information
+Basic backend for modern web application
 
 ## Stack:
 
